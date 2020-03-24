@@ -8,9 +8,18 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import { AuthModule } from './auth/auth.module';
+import { AuthGuard } from './auth/guards/auth.guard';
+import { AuthService } from './auth/services/auth.service';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { TokenInterceptor } from './auth/token.interceptor';
+import { LoginComponent } from './login/login.component';
+
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -19,6 +28,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     FlexLayoutModule,
     MatFormFieldModule,
     MatIconModule,
+    HttpClientModule,
+
   ],
   exports: [
     FlexLayoutModule,
@@ -26,7 +37,14 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatIconModule,
 
   ],
-  providers: [],
+  providers: [
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
